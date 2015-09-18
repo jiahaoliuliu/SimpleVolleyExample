@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -17,12 +18,20 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This is the partial implementation of the example found in this tutorial:
+ * - http://code.tutsplus.com/tutorials/an-introduction-to-volley--cms-23800
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
     private static final String SIMPLE_REQUEST_URL = "http://httpbin.org/html";
     private static final String JSON_REQUEST_URL = "http://httpbin.org/get?site=code&network=tutsplus";
+    private static final String POST_REQUEST_URL = "http://httpbin.org/post";
 
     // View
     private TextView mContentTextView;
@@ -37,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
         //startSimpleVolleyRequest();
 
-        startJsonVolleyRequest();
+        //startJsonVolleyRequest();
+
+        startVolleyPostRequest();
     }
 
     private void startSimpleVolleyRequest() {
@@ -78,5 +89,33 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Volley.newRequestQueue(this).add(jsonRequest);
+    }
+
+    private void startVolleyPostRequest() {
+        StringRequest stringPostRequest = new StringRequest(Request.Method.POST, POST_REQUEST_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.v(TAG, "Data received ");
+                        Log.v(TAG, response);
+                        mContentTextView.setText(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, "Error sending post request", error);
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // The post parameter
+                params.put("site", "code");
+                params.put("network", "tutsplus");
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(this).add(stringPostRequest);
     }
 }
