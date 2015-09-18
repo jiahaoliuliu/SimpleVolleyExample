@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">SimpleVolleyExample</string>
+    <string name="app_name">Simple Volley Example</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 </resources>
